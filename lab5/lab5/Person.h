@@ -6,6 +6,9 @@ using std::cout;
 using std::endl;
 using std::string;
 
+#define NAMELENGTH 20
+#define SURNAMELENGTH 30
+
 enum Sex
 {
 	male = 1,
@@ -15,8 +18,10 @@ enum Sex
 class Person
 {
 public:
-	char name[20];
-	char surname[30];
+	
+
+	char name[NAMELENGTH];
+	char surname[SURNAMELENGTH];
 	int age;
 	Sex sex;
 
@@ -30,29 +35,30 @@ public:
 		SetAge(Age);
 		SetSex(Sex);
 	}
+
 	void SetName(char Name[])
 	{
-		for (int i = 0; i < 20; i++)
-		{
+		int i(0);
+		for (; i < NAMELENGTH && Name[i]; ++i)
 			name[i] = Name[i];
-			if (Name[i] == '\0')
-				break;
-		}
+
+		name[i] = '\0';
 	}
+
 	void SetSurname(char Surname[])
 	{
-		for (int i = 0; i < 30; i++)
-		{
+		int i(0);
+		for (; i < SURNAMELENGTH && Surname[i]; ++i)
 			surname[i] = Surname[i];
-			if (Surname[i] == '\0')
-				break;
-		}
+
+		surname[i] = '\0';
 	}
 
 	void SetAge(int Age)
 	{
 		age = Age;
 	}
+
 	void SetSex(Sex Sex)
 	{
 		sex = Sex;

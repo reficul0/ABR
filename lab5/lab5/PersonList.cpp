@@ -4,8 +4,8 @@
 //считывание данных о человеке
 void PersonList::ReadingPerson()
 {
-	char name[20];
-	char surname[40];
+	char name[NAMELENGTH];
+	char surname[SURNAMELENGTH];
 	int age;
 	Sex sex;
 
@@ -22,15 +22,7 @@ void PersonList::ReadingPerson()
 		cin >> sexOfPerson;
 	} while (sexOfPerson != 1 && sexOfPerson != 2); //Проверка допустимости значения
 
-	switch (sexOfPerson)
-	{
-	case 1:
-		sex = male;
-		break;
-	case 2:
-		sex = female;
-		break;
-	}
+	sex = (Sex)sexOfPerson;
 
 	do
 	{
@@ -38,12 +30,12 @@ void PersonList::ReadingPerson()
 		cin >> age;
 	} while (age < 0 || age > 150); //Проверка корректности возраста
 		
-	this->Add(new Person(name, surname, age, sex));
+	Add(new Person(name, surname, age, sex));
 }
 
 int PersonList::GetCount()
 {
-	return (_count);
+	return _count;
 }
 
 void PersonList::SetCount(int count)
@@ -56,16 +48,16 @@ void PersonList::Add(Person *person)
 {
 	PersonListItem *item = new PersonListItem(person);
 
-	if (_head != nullptr)
+	if (_head)
 	{
-		item->Previous = _tail;
-		_tail->Next = item;
+		item->previous = _tail;
+		_tail->next = item;
 		_tail = item;
 	}
 	else
 		_head = _tail = item;
 
-	this->SetCount(GetCount() + 1);
+	SetCount(GetCount() + 1);
 }
 
 //Добавление человека с рандомными данными
@@ -76,16 +68,15 @@ void PersonList::RandomPersonAdd()
 	string surname[] {"Bishep", "Macey", "Alsopp", "Fisher", "Farrell", "Taft", "Porter",
 		"Finch", "Waller", "Sherlok", "Roberts", "Waller", "Hawkins", "Wood", "Turner"};
 	
+	// srand должен подкулючить программист в main, иначе,
+	// если сранддить тут, то дебаггер неправильно себя ведет
 	int randomNameIndex = rand() % 14; //Случайный индекс для имени
-	printf("%d", randomNameIndex);
 	int randomSurnameIndex = rand() % 14; //Случайный индекс для фамилии
-
 
 	string NAME = name[randomNameIndex];
 	size_t sizeName = strlen(name[randomNameIndex].c_str()) + 1;
 	char *charName = new char[sizeName + 1];
 	strcpy_s(charName, sizeName, NAME.c_str());
-	
 
 	string SURNAME = surname[randomSurnameIndex];
 	size_t sizeSurname = strlen(surname[randomSurnameIndex].c_str()) + 1;
@@ -94,21 +85,10 @@ void PersonList::RandomPersonAdd()
 	
 
 	Person *randPerson = MakeRandomPerson(charName, charSurname, randomNameIndex);
-	delete[] charName;
-	delete[] charSurname;
 
-	/*cout << "Информация о человеке :" << endl;
-	cout << randPerson->name << " " << randPerson->surname << endl;
-	cout << randPerson->age << " лет" << endl;
-	switch (randPerson->sex)
-	{
-	case 1:
-		cout << "male" << endl;
-		break;
-	case 2:
-		cout << "female" << endl;
-		break;
-	}*/
+	delete[] charName; charName = nullptr;
+	delete[] charSurname; charSurname = nullptr;
+
 	Add(new Person(*randPerson));
 
 	delete randPerson;
@@ -120,22 +100,20 @@ Person *PersonList::MakeRandomPerson(char *name, char *surname, int randomNameIn
 	Person *randPerson = new Person;
 
 	//Заполнение данными
-	for (int i = 0; i < 20; i++)
-	{
+	int i(0);
+	for (; i < NAMELENGTH && name[i]; ++i)
 		randPerson->name[i] = name[i];
-		if (!name[i])
-			break;
-	}
-	for (int i = 0; i < 20; i++)
-	{
-		randPerson->surname[i] = surname[i];
-		if (!surname[i])
-			break;
-	}
+	randPerson->name[i] = '\0';
+
+	int j(0);
+	for (; i < SURNAMELENGTH && surname[j]; ++j)
+		randPerson->surname[j] = surname[j];
+	randPerson->surname[j] = '\0';
 
 	int years = 15 + rand() % 100;
-	randPerson->age = years;
+	randPerson->SetAge(years);
 
+	/*Было
 	if (randomNameIndex > 7)
 	{
 		randPerson->sex = female;
@@ -143,48 +121,49 @@ Person *PersonList::MakeRandomPerson(char *name, char *surname, int randomNameIn
 	else
 	{
 		randPerson->sex = male;
-	}
-
-	return (randPerson);
+	}*/
+	// Стало
+	randPerson->SetSex((randomNameIndex > 7) ? female : male);
+	
+	return randPerson;
 }
 
 //Поиск человека по указанному индексу
 Person* PersonList::Find(int index)
 {
 	if (index < 0)
-	{
 		return nullptr;
-	}
-	int i = 0;
-	PersonListItem *item = _head;
+
+	int i(0);
+	PersonListItem* item(_head);
 	while (i < index)
 	{
 		if (item == nullptr)
-		{
 			return nullptr;
-		}
-		item = item->Next;
-		i++;
-	};
+
+		item = item->next;
+		++i;
+	}
+
 	return item->GetValue();
 }
 
 //Возвращает индекс человека, если он есть в списке 
-int PersonList::IndexOf(Person *person)
+int PersonList::IndexOf(Person* person)
 {
-	PersonListItem *item = _head;
-	int index = 0;
-	while (item != nullptr)
+	PersonListItem* item = _head;
+	int index(0);
+	while (item)
 	{
-		if (*(item->GetValue()->name) == *(person->name) &&
-			(*(item->GetValue()->surname) == *(person->surname)) &&
-			(item->GetValue()->age == (person->age)) &&
-			(item->GetValue()->sex == (person->sex)))
+		if (*(item->GetValue()->name) == *(person->name)
+			&& (item->GetValue()->age == (person->age))
+			&& (item->GetValue()->sex == (person->sex))
+			&& (*(item->GetValue()->surname) == *(person->surname)))
 		{
 			return index;
 		}
-		index++;
-		item = item->Next;
+		++index;
+		item = item->next;
 	}
 	return -1;
 }
@@ -192,46 +171,47 @@ int PersonList::IndexOf(Person *person)
 //Удаление элемента списка
 void PersonList::Remove(Person *person)
 {
-	PersonListItem *item = _head;
-	while (item != nullptr)
+	PersonListItem *item(_head);
+	while (item)
 	{
-		if (*(item->GetValue()->name) == *(person->name) &&
-			(*(item->GetValue()->surname) == *(person->surname)) &&
-			(item->GetValue()->age == (person->age)) &&
-			(item->GetValue()->sex == (person->sex)))
+		if (*(item->GetValue()->name) == *(person->name)
+			&& (item->GetValue()->age == (person->age))
+			&& (item->GetValue()->sex == (person->sex))
+			&& (*(item->GetValue()->surname) == *(person->surname)))
 		{
 			if (_head == item)
 			{
-				if (item->Next == nullptr)
+				if (item->next)
 				{
 					_head = nullptr;
 					_tail = nullptr;
-					this->SetCount(GetCount() - 1);
+					SetCount(GetCount() - 1);
 					break;
 				}
-				_head->Next->Previous = nullptr;
-				_head = _head->Next;
-				this->SetCount(GetCount() - 1);
+
+				_head->next->previous = nullptr;
+				_head = _head->next;
+				SetCount(GetCount() - 1);
 				break;
 			}
 
 			if (_tail == item)
 			{
-				_tail->Previous->Next = nullptr;
-				_tail = _tail->Previous;
-				this->SetCount(GetCount() - 1);
+				_tail->previous->next = nullptr;
+				_tail = _tail->previous;
+				SetCount(GetCount() - 1);
 				break;
 			}
 
 			if (_head != item && _tail != item)
 			{
-				item->Previous->Next = item->Next;
-				item->Next->Previous = item->Previous;
-				this->SetCount(GetCount() - 1);
+				item->previous->next = item->next;
+				item->next->previous = item->previous;
+				SetCount(GetCount() - 1);
 				break;
 			}
 		}
-		item = item->Next;
+		item = item->next;
 	}
 }
 
@@ -245,13 +225,17 @@ void PersonList::RemoveAt(int index)
 //Очистка списка
 void PersonList::Clear()
 {
-	PersonListItem *listPointer = _head;
-	while (listPointer->Next != NULL)
+	PersonListItem *listPointer(_head);
+	
+	while (listPointer->next)
 	{
-		listPointer = listPointer->Next;
-		delete listPointer->Previous;
+		listPointer = listPointer->next;
+
+		delete listPointer->previous;
+		listPointer->previous = nullptr;
 	}
 	delete listPointer;
+	listPointer = nullptr;
 	
 	_head = nullptr;
 	_tail = nullptr;
@@ -267,14 +251,16 @@ void PersonList::OutputNote(PersonListItem list, int count)
 	cout << "Age: " << list.GetValue()->age << endl;
 	cout << "Sex: ";
 
-	if (list.GetValue()->sex == male)
-	{
-		cout << "Male";
-	}
-	else
-	{
-		cout << "Female";
-	}
+	// БЫЛО
+	//if (list.GetValue()->sex == male)
+	//	cout << "Male";
+	//else
+	//	cout << "Female";
+	// Стало
+	list.GetValue()->sex == male 
+					? cout << "Male"
+					: cout << "Female";
+
 	cout << endl << endl;
 }
 
@@ -282,16 +268,16 @@ void PersonList::OutputNote(PersonListItem list, int count)
 void PersonList::OutputList()
 {
 	cout << endl;
-	PersonListItem* item = _head;
-	int i = 1;
-	while (item != nullptr)
+	PersonListItem* item(_head);
+	int i(1);
+	while (item)
 	{
 		OutputNote(*item, i);
-		item = item->Next;
-		i++;
+		item = item->next;
+		++i;
 	}
 
-	if (_head == nullptr)
+	if (!_head)
 	{
 		cout << "Head = NULL \t Tail = NULL " << endl;
 	}
