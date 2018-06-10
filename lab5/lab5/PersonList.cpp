@@ -226,17 +226,20 @@ void PersonList::RemoveAt(int index)
 void PersonList::Clear()
 {
 	PersonListItem *listPointer(_head);
-	
-	while (listPointer->next)
+	if (listPointer)
 	{
-		listPointer = listPointer->next;
+		while (listPointer->next)
+		{
+			listPointer = listPointer->next;
 
-		delete listPointer->previous;
-		listPointer->previous = nullptr;
-	}
-	delete listPointer;
-	listPointer = nullptr;
+			delete listPointer->previous;
+			listPointer->previous = nullptr;
+		}
 	
+		delete listPointer;
+		listPointer = nullptr;
+	}
+
 	_head = nullptr;
 	_tail = nullptr;
 	SetCount(0);

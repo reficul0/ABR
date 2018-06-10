@@ -44,6 +44,10 @@ public:
 		_head = nullptr;
 		_tail = nullptr;
 	}
+	~PersonList()
+	{
+		Clear();
+	}
 
 	void Add(Person *person);  //добавить человека в список +
 	Person* Find(int index);  //найти человека по указанному индексу +
