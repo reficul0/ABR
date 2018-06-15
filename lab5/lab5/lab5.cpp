@@ -21,6 +21,8 @@ void ProofOfWork(List<T>* list, const Category categoryName)
 		list->OutputList(categoryName);
 		list->RemoveAt(2);
 		list->OutputList(categoryName);
+		list->AddAt(new double(3), 4);
+		list->OutputList(categoryName);
 		break;
 	}
 	case Category::PersonPtr:

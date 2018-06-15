@@ -52,7 +52,6 @@ T1* List<T1>::Find(int index)
 		++i;
 	}
 
-	
 	return item ? item->GetValue() : nullptr;
 }
 
@@ -128,6 +127,44 @@ void List<T1>::RemoveAt(int index)
 {
 	T1 *person = Find(index);
 	Remove(person);
+}
+
+//Удаление элемента списка по индексу
+template <typename T1>
+void List<T1>::AddAt(T1 *item, int index)
+{
+	ListItem<T1> *itemOnDesiredIndex(_head);
+	ListItem<T1> *itemForAdd = new ListItem<T1>(item);
+	
+	if (!_head && !index) // Если список пустой
+		Add(item);
+	else if (_head && !index) // Если не пустой, и просят добавить в начало
+	{
+		itemForAdd->next = _head;
+		itemForAdd->previous = nullptr;
+		_head->previous = itemForAdd;
+		_head = itemForAdd;
+		SetCount(GetCount() + 1);
+		return;
+	}
+	else if (GetCount() && index == GetCount() ) // Просят добавить в конец
+	{
+		_tail->next = itemForAdd;
+		itemForAdd->previous = _tail;
+		itemForAdd->next = nullptr;
+		_tail = itemForAdd;
+		SetCount(GetCount() + 1);
+		return;
+	}
+	else if(index < 0 || index > GetCount()) // Если индекс вне диапозона
+		throw "Index out range";
+
+	for (int i(0); i < index - 1; itemOnDesiredIndex = itemOnDesiredIndex->next);// Ищем элемент с нашим индексом
+
+	itemForAdd->previous = itemOnDesiredIndex->previous;
+	itemOnDesiredIndex->previous->next = itemForAdd;
+	itemOnDesiredIndex->previous = itemForAdd;
+	itemForAdd->next = itemOnDesiredIndex;
 }
 
 template<typename T1>

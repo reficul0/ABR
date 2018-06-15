@@ -64,6 +64,7 @@ public:
 	}
 
 	void Add(T1 *person);  //добавить человека в список +
+	void AddAt(T1 *person, int index);  //добвить человека из списка по индексу +
 	T1* Find(int index);  //найти человека по указанному индексу +
 	int IndexOf(T1 *person);  //вернуть индекс человека, если он есть в списке +
 	void Remove(T1 *person);  //удалить человека из списка +
