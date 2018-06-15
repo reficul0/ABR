@@ -1,10 +1,7 @@
 #pragma once
 #include "stdafx.h"
 
-using std::cin;
-using std::cout;
-using std::endl;
-using std::string;
+using namespace std;
 
 #define NAMELENGTH 20
 #define SURNAMELENGTH 30
@@ -17,11 +14,27 @@ enum Sex
 
 class Person
 {
+	friend ostream& operator<<(ostream& cout, Person& circleArr);
 public:
 	char name[NAMELENGTH];
 	char surname[SURNAMELENGTH];
 	int age;
 	Sex sex;
+
+	friend ostream& operator<<(ostream& out, Person& circleArr)
+	{
+		out << "Name: " << circleArr.name << endl;
+		out << "Surmane: " << circleArr.surname << endl;
+		out << "Age: " << circleArr.age << endl;
+		out << "Sex: ";
+
+		circleArr.sex == male
+			? cout << "Male"
+			: cout << "Female";
+
+		out << endl << endl;
+		return cout;
+	}
 
 	Person() {}
 

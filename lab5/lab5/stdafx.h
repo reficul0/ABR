@@ -6,8 +6,9 @@
 #pragma once
 
 #include <iostream>
+#include <ostream>
 #include <time.h>
-#include<ctime>
+#include <ctime>
 #include <string.h>
 
 #include "targetver.h"
