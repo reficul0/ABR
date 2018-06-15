@@ -4,6 +4,16 @@
 #include "PersonList.h"
 #include "PersonList.h"
 
+enum class Category
+{
+	NotSet = 0,
+	Double = 1,
+	PersonPtr = 2,
+	DoubleArr = 3,
+	DoubleList = 4,
+	Exit = 5
+};
+
 template <typename T1>
 class List
 {
@@ -63,5 +73,5 @@ public:
 	void SetCount(int count); //установить количество элементов+
 
 	void OutputNote(ListItem<T1> list, int count);
-	void OutputList();
+	void OutputList(Category categoryName);
 };

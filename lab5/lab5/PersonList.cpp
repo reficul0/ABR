@@ -1,5 +1,6 @@
 #include "stdafx.h"
 
+#include "Person.h"
 #include "PersonList.h"
 
 template <typename T1>
@@ -51,7 +52,8 @@ T1* List<T1>::Find(int index)
 		++i;
 	}
 
-	return item->GetValue();
+	
+	return item ? item->GetValue() : nullptr;
 }
 
 
@@ -81,14 +83,11 @@ void List<T1>::Remove(T1 *person)
 	ListItem<T1> *item(_head);
 	while (item)
 	{
-		if (*(item->GetValue()->name) == *(person->name)
-			&& (item->GetValue()->age == (person->age))
-			&& (item->GetValue()->sex == (person->sex))
-			&& (*(item->GetValue()->surname) == *(person->surname)))
+		if (item->GetValue() == person)
 		{
 			if (_head == item)
 			{
-				if (item->next)
+				if (!item->next)
 				{
 					_head = nullptr;
 					_tail = nullptr;
@@ -169,29 +168,42 @@ void List<T1>::OutputNote(ListItem<T1> list, int count)
 	//else
 	//	cout << "Female";
 	// Стало
-	/*list.GetValue()->sex == male 
+	list.GetValue()->sex == male 
 					? cout << "Male"
 					: cout << "Female";
 
-	cout << endl << endl;*/
+	cout << endl << endl;
 }
 
 template <typename T1>
 //Вывести список
-void List<T1>::OutputList()
+void List<T1>::OutputList(Category categoryName)
 {
-	cout << endl;
-	ListItem<T1>* item(_head);
-	int i(1);
-	while (item)
+	switch (categoryName)
 	{
-		OutputNote(*item, i);
-		item = item->next;
-		++i;
-	}
-
-	if (!_head)
-	{
-		cout << "Head = NULL \t Tail = NULL " << endl;
+	case Category::Double:
+		for (int i(0); i < GetCount(); ++i)
+		{
+			if (Find(i))
+			{
+				double findResult = *Find(i);
+				cout << "Arr[" << i + 1 << "] = " << findResult << endl;
+			}
+			else
+				cout << "Arr[" << i + 1 << "] =  nan" << endl;
+			
+		}
+		cout << endl;
+		break;
+	case Category::PersonPtr:
+		break;
+	case Category::DoubleArr:
+		break;
+	case Category::DoubleList:
+		break;
+	case Category::Exit:
+		return;
+	default:
+		break;
 	}
 }
