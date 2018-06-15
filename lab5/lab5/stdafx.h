@@ -13,6 +13,8 @@
 #include <stdio.h>
 #include <tchar.h>
 
+#include <string>
+
 #include "Person.h"
 #include "PersonList.h"
 // TODO: Установите здесь ссылки на дополнительные заголовки, требующиеся для программы

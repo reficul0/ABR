@@ -1,67 +1,66 @@
 #pragma once
-#include "Person.h"
+#include "stdafx.h"
 #include <random>
 
-class PersonList
+template <typename T1>
+class List
 {
 private: 
-	class PersonListItem
+	template <typename T1>
+	class ListItem
 	{
 	private:
-		Person *_value;
+		T1 *_value;
 	public:
-		PersonListItem * next;
-		PersonListItem* previous;
+		ListItem<T1>* next;
+		ListItem<T1>* previous;
 
-		PersonListItem() 
+		ListItem() 
 		{
 			_value = nullptr;
 			next = nullptr;
 			previous = nullptr;
 		}
 
-		PersonListItem(Person* person)
+		ListItem(T1* item)
 		{
-			_value = person;
+			_value = item;
 			next = nullptr;
 			previous = nullptr;
 		}
 		
-		Person* GetValue()
+		template <class T1>
+		T1* GetValue()
 		{
 			return _value;
 		}
 	};
 
-	PersonListItem* _head; //указатель на голову списка 
-	PersonListItem* _tail; //указатель на конец списка
+	ListItem<T1>* _head; //указатель на голову списка 
+	ListItem<T1>* _tail; //указатель на конец списка
 	int _count;    //количество элементов в списке 
 
 public: 
-	PersonList()
+	List()
 	{
 		_count = 0;
 		_head = nullptr;
 		_tail = nullptr;
 	}
-	~PersonList()
+	~List()
 	{
 		Clear();
 	}
 
-	void Add(Person *person);  //добавить человека в список +
-	Person* Find(int index);  //найти человека по указанному индексу +
-	int IndexOf(Person *person);  //вернуть индекс человека, если он есть в списке +
-	void Remove(Person *person);  //удалить человека из списка +
+	void Add(T1 *person);  //добавить человека в список +
+	T1* Find(int index);  //найти человека по указанному индексу +
+	int IndexOf(T1 *person);  //вернуть индекс человека, если он есть в списке +
+	void Remove(T1 *person);  //удалить человека из списка +
 	void RemoveAt(int index);  //удалить человека из списка по индексу +
 	void Clear();    //очистить список +
 	int GetCount();   //получить количество элементов +
 	void SetCount(int count); //установить количество элементов+
-	void ReadingPerson(); //считываниие данных+
-	void RandomPersonAdd(); //добавление человека с рандомными данными +
-	Person* MakeRandomPerson(char* name, char* surname, int randomNameIndex); //создание человека с рандомными данными +
 
-
-	void OutputNote(PersonListItem list, int count);
+	void OutputNote(ListItem<T1> list, int count);
 	void OutputList();
 };
