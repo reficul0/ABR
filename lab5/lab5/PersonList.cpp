@@ -1,5 +1,7 @@
 #include "stdafx.h"
 
+#include "PersonList.h"
+
 template <typename T1>
 int List<T1>::GetCount()
 {
@@ -61,10 +63,7 @@ int List<T1>::IndexOf(T1* person)
 	int index(0);
 	while (item)
 	{
-		if (*(item->GetValue()->name) == *(person->name)
-			&& (item->GetValue()->age == (person->age))
-			&& (item->GetValue()->sex == (person->sex))
-			&& (*(item->GetValue()->surname) == *(person->surname)))
+		if (item->GetValue() == person)
 		{
 			return index;
 		}

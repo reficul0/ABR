@@ -1,6 +1,8 @@
 #include "stdafx.h"
-#include<iostream>
-#include<ctime>
+
+#include "Person.h"
+#include "PersonList.h"
+#include "PersonList.cpp"
 
 
 int main()
@@ -13,6 +15,7 @@ int main()
 		List<Person> *list2 = new List<Person>;
 		
 		Person a;
+		list1->Add(&a);
 		list1->Add(&a);
 		cout << list1->GetCount() << endl;
 		cout << list1->IndexOf(0) << endl;

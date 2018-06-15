@@ -1,6 +1,8 @@
 #pragma once
 #include "stdafx.h"
-#include <random>
+
+#include "PersonList.h"
+#include "PersonList.h"
 
 template <typename T1>
 class List
@@ -29,7 +31,6 @@ private:
 			previous = nullptr;
 		}
 		
-		template <class T1>
 		T1* GetValue()
 		{
 			return _value;

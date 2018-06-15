@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <time.h>
+#include<ctime>
 #include <string.h>
 
 #include "targetver.h"
@@ -14,7 +15,5 @@
 #include <tchar.h>
 
 #include <string>
-
-#include "Person.h"
-#include "PersonList.h"
+#include <random>
 // TODO: Установите здесь ссылки на дополнительные заголовки, требующиеся для программы
