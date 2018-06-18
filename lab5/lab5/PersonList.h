@@ -68,7 +68,7 @@ public:
 		ListItem<T1> *itemOnDesiredIndex(_head);
 		ListItem<T1> *itemForAdd = new ListItem<T1>(item);
 
-		if (!_head && !index || GetCount() && index == GetCount()+1) // Если список пустой или эленет просят добавить в хвост
+		if (!_head && !index || GetCount() && index == GetCount()) // Если список пустой или эленет просят добавить в хвост
 		{
 			Add(item);
 			return;
@@ -82,7 +82,7 @@ public:
 			SetCount(GetCount() + 1);
 			return;
 		}
-		else if (GetCount() && index == GetCount()) // Просят добавить на место последнего элемента
+		else if (GetCount() && index == GetCount()-1) // Просят добавить на место последнего элемента
 		{
 			itemForAdd->previous = _tail->previous;
 			_tail->previous->next = itemForAdd;

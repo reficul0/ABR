@@ -4,7 +4,10 @@
 #include "PersonList.h"
 #include "PersonList.cpp"
 
-void PrintDoubleArrList(void* list, int count)
+template <typename T>
+void OutputList(Category categoryName, List<T>* list);
+
+void PrintDoubleArrList(void* list, int arrLength)
 {
 	auto list1 = reinterpret_cast<List<double*>*>(list);
 	for (int i(0); i < list1->GetCount(); ++i)
@@ -14,11 +17,29 @@ void PrintDoubleArrList(void* list, int count)
 			auto findResult = *(list1->Find(i));
 			cout << "List[" << i << "] = ";
 			cout << "{ " << findResult[0];
-			for (int j(1); j < 5; ++j)
+			for (int j(1); j < arrLength; ++j)
 			{
 				cout << ", " << findResult[j];
 			}
 			cout << " }" << endl;
+		}
+		else
+			cout << "List[" << i << "] =  nan" << endl;
+
+	}
+	cout << endl;
+}
+void PrintDoubleListList(void* list)
+{
+	cout << "- List data -" << endl;
+	auto list1 = reinterpret_cast<List<List<double>>*>(list);
+	for (int i(0); i < list1->GetCount(); ++i)
+	{
+		if (list1->Find(i))
+		{
+			auto findResult = list1->Find(i);
+			cout << "List #" << i << ":" << endl;
+			OutputList(Category::Double, findResult);
 		}
 		else
 			cout << "List[" << i << "] =  nan" << endl;
@@ -53,6 +74,7 @@ void OutputList(Category categoryName, List<T>* list)
 		PrintDoubleArrList((void*)list, 5);
 		break;
 	case Category::DoubleList:
+		PrintDoubleListList((void*)list);
 		break;
 	case Category::Exit:
 		return;
@@ -75,7 +97,7 @@ int main()
 		Category userChoice(Category::NotSet);
 		while (userChoice != Category::Exit)
 		{
-			string categoryTable = "1. Demonstrate on double\n2. Demonstrate on *Person\n3. Demonstrate on double[5]\n4. Demonstrate on List<double>\n5. Exit\n-- - Choose 1 - 4: ";
+			string categoryTable = "1. Demonstrate on double\n2. Demonstrate on *Person\n3. Demonstrate on double[5]\n4. Demonstrate on List<double>\n5. Exit\n-- - Choose 1 - 5: ";
 			puts(categoryTable.c_str());
 
 			int userChoiceInt(0);
@@ -130,8 +152,11 @@ int main()
 				List<double*> *list1 = new List<double*>;
 				for (double i(0); i < listFinalLength; ++i)
 				{
-					auto ar = new double[arrayLength] { i, i + 1, i + 2, i + 3, i + 4 };
-					list1->Add(new double*(ar));
+					auto arr = new double[arrayLength] { i, i + 1, i + 2, i + 3, i + 4 };
+					if (!arr)
+						throw "Memory leack.";
+
+					list1->Add(new double*(arr));
 				}
 				OutputList(Category::DoubleArr, list1);
 
@@ -148,9 +173,32 @@ int main()
 			}
 			case Category::DoubleList:
 			{
-				//List<List<double>> *list1 = new List<List<double>>;
-				//ProofOfWork(Category::DoubleList);
+				List<List<double>> *list1 = new List<List<double>>;
+				for (double i(0); i < listFinalLength; ++i)
+				{
+					auto arr = new List<double>;
+					if (!arr)
+						throw "Memory leack.";
 
+					for (double j(0); j < rand()%5 + 1; ++j)
+						arr->Add(new double(rand() % 100));
+
+					list1->Add(arr);
+				}
+				PrintDoubleListList((void*)list1);
+
+				list1->RemoveAt(indexForProofRemove);
+				PrintDoubleListList((void*)list1);
+
+				auto arr = new List<double>;
+				if (!arr)
+					throw "Memory leack.";
+
+				for (double j(0); j < rand() % 5 + 1; ++j)
+					arr->Add(new double(rand() % 100));
+
+				list1->AddAt(arr, indexForProofAdd);
+				PrintDoubleListList((void*)list1);
 				break;
 			}
 			case Category::Exit:
