@@ -4,6 +4,29 @@
 #include "PersonList.h"
 #include "PersonList.cpp"
 
+void PrintDoubleArrList(void* list, int count)
+{
+	auto list1 = reinterpret_cast<List<double*>*>(list);
+	for (int i(0); i < list1->GetCount(); ++i)
+	{
+		if (list1->Find(i))
+		{
+			auto findResult = *(list1->Find(i));
+			cout << "List[" << i << "] = ";
+			cout << "{ " << findResult[0];
+			for (int j(1); j < 5; ++j)
+			{
+				cout << ", " << findResult[j];
+			}
+			cout << " }" << endl;
+		}
+		else
+			cout << "List[" << i << "] =  nan" << endl;
+
+	}
+	cout << endl;
+}
+
 template <typename T>
 void OutputList(Category categoryName, List<T>* list)
 {
@@ -11,34 +34,23 @@ void OutputList(Category categoryName, List<T>* list)
 	{
 	case Category::Double:
 	case Category::PersonPtr:
-	case Category::DoubleArr:
 		for (int i(0); i < list->GetCount(); ++i)
 		{
 			if (list->Find(i))
 			{
 				auto findResult = *(list->Find(i));
 				cout << "List[" << i << "] = ";
-
-				if (Category::DoubleArr != categoryName)
-				{
-					cout << findResult << endl;
-				}
-				else
-				{
-					auto *doubleArr = list->Find(i);
-					cout << "{ " << doubleArr[0];
-					for (int j(1); j < 5; ++j)
-					{
-						cout << ", " << doubleArr[j];
-					}
-					cout << " }" << endl;
-				}
+				cout << findResult << endl;
 			}
 			else
 				cout << "List[" << i << "] =  nan" << endl;
 
 		}
 		cout << endl;
+		break;
+
+	case Category::DoubleArr:
+		PrintDoubleArrList((void*)list, 5);
 		break;
 	case Category::DoubleList:
 		break;
@@ -115,10 +127,11 @@ int main()
 			{
 				const int arrayLength(5);
 
-				List<double> *list1 = new List<double>;
+				List<double*> *list1 = new List<double*>;
 				for (double i(0); i < listFinalLength; ++i)
 				{
-					list1->Add(new double[arrayLength] { i, i+1, i+2, i+3, i+4 });
+					auto ar = new double[arrayLength] { i, i + 1, i + 2, i + 3, i + 4 };
+					list1->Add(new double*(ar));
 				}
 				OutputList(Category::DoubleArr, list1);
 
@@ -129,7 +142,7 @@ int main()
 				if (!arr)
 					throw "Memory leack";
 
-				list1->AddAt(arr, indexForProofAdd);
+				list1->AddAt(&arr, indexForProofAdd);
 				OutputList(Category::DoubleArr, list1);
 				break;
 			}
