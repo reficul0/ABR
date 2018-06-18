@@ -65,6 +65,9 @@ public:
 	//добвить человека из списка по индексу +
 	void AddAt(T1 *item, int index)
 	{
+		if (!item)
+			throw "Empty pointer.";
+
 		ListItem<T1> *itemOnDesiredIndex(_head);
 		ListItem<T1> *itemForAdd = new ListItem<T1>(item);
 
@@ -272,6 +275,9 @@ public:
 	//добавить человека в список +
 	void Add(T1 *person)
 	{
+		if (!person)
+			throw "Empty pointer.";
+
 		ListItem<T1> *item = new ListItem<T1>(person);
 
 		if (_head)
@@ -285,4 +291,5 @@ public:
 
 		SetCount(GetCount() + 1);
 	}
+
 };

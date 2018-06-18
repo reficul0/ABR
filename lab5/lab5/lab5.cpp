@@ -10,61 +10,35 @@ void OutputList(Category categoryName, List<T>* list)
 	switch (categoryName)
 	{
 	case Category::Double:
-	{
+	case Category::PersonPtr:
+	case Category::DoubleArr:
 		for (int i(0); i < list->GetCount(); ++i)
 		{
 			if (list->Find(i))
 			{
 				auto findResult = *(list->Find(i));
-				cout << "List[" << i + 1 << "] = " << findResult << endl;
+				cout << "List[" << i << "] = ";
+
+				if (Category::DoubleArr != categoryName)
+				{
+					cout << findResult << endl;
+				}
+				else
+				{
+					auto *doubleArr = list->Find(i);
+					cout << "{ " << doubleArr[0];
+					for (int j(1); j < 5; ++j)
+					{
+						cout << ", " << doubleArr[j];
+					}
+					cout << " }" << endl;
+				}
 			}
 			else
-				cout << "List[" << i + 1 << "] =  nan" << endl;
+				cout << "List[" << i << "] =  nan" << endl;
 
 		}
 		cout << endl;
-		break;
-	}
-	case Category::PersonPtr:
-		for (int i(1); i < list->GetCount(); ++i)
-		{
-			if (list->Find(i))
-			{
-				auto findResult = list->Find(i);
-				cout << "List[" << i << "] = " << findResult << endl;
-
-			}
-			else
-			{
-				cout << "nan" << endl;
-			}
-		}
-		cout << endl;
-		break;
-	case Category::DoubleArr:
-		break;
-	case Category::DoubleList:
-		break;
-	case Category::Exit:
-		return;
-	default:
-		break;
-	}
-}
-
-template <typename T1>
-void ProofOfWork(const Category categoryName, List<T1>* list)
-{
-	switch (categoryName)
-	{
-	case Category::Double:
-		
-	case Category::PersonPtr:
-		
-	case Category::NotSet:
-		throw "Category not set.";
-		break;
-	case Category::DoubleArr:
 		break;
 	case Category::DoubleList:
 		break;
@@ -81,7 +55,11 @@ int main()
 	{
 		srand(time(NULL));
 		setlocale(LC_ALL, "Rus");
-		
+
+		const int listFinalLength(5),
+				  indexForProofRemove(2),
+				  indexForProofAdd(4);
+
 		Category userChoice(Category::NotSet);
 		while (userChoice != Category::Exit)
 		{
@@ -99,44 +77,67 @@ int main()
 			case Category::Double:
 			{
 				List<double> *list1 = new List<double>;
-				for (int i(1); i < 6; ++i)
+				
+				for (int i(1); i < listFinalLength+1 ; ++i)
 				{
 					double* data = new double(i);
 					list1->Add(data);
 				}
 				OutputList(Category::Double, list1);
-				list1->RemoveAt(2);
+
+				list1->RemoveAt(indexForProofRemove);
 				OutputList(Category::Double, list1);
-				list1->AddAt(new double(3), 4);
+				
+				list1->AddAt(new double(3), indexForProofAdd);
 				OutputList(Category::Double, list1);
-				break;
+
 				break;
 			}
 			case Category::PersonPtr:
 			{
 				List<Person*> *list1 = new List<Person*>;
-				for (int i(1); i < 6; ++i)
+				for (int i(0); i < listFinalLength; ++i)
 				{
 					list1->RandomPersonAdd();
 				}
 				OutputList(Category::PersonPtr, list1);
-				list1->RemoveAt(2);
+
+				list1->RemoveAt(indexForProofRemove);
 				OutputList(Category::PersonPtr, list1);
-				auto randPerson = list1->MakeRandomPerson("Name", "Surname", 1);
-				list1->AddAt(&randPerson, 4);
+
+				auto randPerson = list1->MakeRandomPerson("RandomName", "RandomSurname", 1);
+				list1->AddAt(&randPerson, indexForProofAdd);
 				OutputList(Category::PersonPtr, list1);
+
 				break;
 			}
 			case Category::DoubleArr:
 			{
-				List<double[5]> *list1 = new List<double[5]>;
-				//ProofOfWork(Category::DoubleArr);
+				const int arrayLength(5);
+
+				List<double> *list1 = new List<double>;
+				for (double i(0); i < listFinalLength; ++i)
+				{
+					list1->Add(new double[arrayLength] { i, i+1, i+2, i+3, i+4 });
+				}
+				OutputList(Category::DoubleArr, list1);
+
+				list1->RemoveAt(indexForProofRemove);
+				OutputList(Category::DoubleArr, list1);
+
+				double *arr = new double[arrayLength] { 1., 2., 3., 4., 5. };
+				if (!arr)
+					throw "Memory leack";
+
+				list1->AddAt(arr, indexForProofAdd);
+				OutputList(Category::DoubleArr, list1);
 				break;
 			}
 			case Category::DoubleList:
 			{
-				List<List<double>> *list1 = new List<List<double>>;
+				//List<List<double>> *list1 = new List<List<double>>;
 				//ProofOfWork(Category::DoubleList);
+
 				break;
 			}
 			case Category::Exit:
